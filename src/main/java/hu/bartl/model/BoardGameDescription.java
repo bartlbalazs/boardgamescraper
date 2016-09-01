@@ -1,77 +1,60 @@
 package hu.bartl.model;
 
-import com.google.gson.annotations.Expose;
+import javax.xml.bind.annotation.*;
 
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-
-@XmlRootElement(name = "boardgame")
+@XmlRootElement(name = "item")
+@XmlAccessorType(XmlAccessType.FIELD)
 public class BoardGameDescription {
 
-    @Expose
+    @XmlAttribute
     private int id;
 
-    @XmlAttribute
-    private boolean subtypemismatch = false;
+    @XmlElement
+    private NameType name;
 
     @XmlElement
-    @Expose
-    private String name;
+    private StringValueType yearpublished;
 
     @XmlElement
-    @Expose
-    private String yearpublished;
+    private StringValueType minplayers;
 
     @XmlElement
-    @Expose
-    private String minplayers;
+    private StringValueType maxplayers;
 
     @XmlElement
-    @Expose
-    private String maxplayers;
+    private StringValueType playingtime;
 
     @XmlElement
-    @Expose
-    private String playingtime;
-
-    @XmlElement
-    @Expose
     private String thumbnail;
 
     @XmlElement
-    @Expose
     private String image;
+
+    @XmlElement(name = "statistics")
+    private Statistic statistics;
+
 
     public int getId() {
         return id;
     }
 
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public boolean isSubtypemismatch() {
-        return subtypemismatch;
-    }
-
-    public String getName() {
+    public NameType getName() {
         return name;
     }
 
-    public String getYearpublished() {
+    public StringValueType getYearpublished() {
         return yearpublished;
     }
 
-    public String getMinplayers() {
+    public StringValueType getMinplayers() {
         return minplayers;
     }
 
-    public String getMaxplayers() {
+    public StringValueType getMaxplayers() {
         return maxplayers;
     }
 
-    public String getPlayingtime() {
+    public StringValueType getPlayingtime() {
         return playingtime;
     }
 
@@ -83,6 +66,10 @@ public class BoardGameDescription {
         return image;
     }
 
+    public Statistic getStatistics() {
+        return statistics;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -90,15 +77,20 @@ public class BoardGameDescription {
 
         BoardGameDescription that = (BoardGameDescription) o;
 
-        if (name != null ? !name.equals(that.name) : that.name != null) return false;
-        return yearpublished != null ? yearpublished.equals(that.yearpublished) : that.yearpublished == null;
+        return id == that.id;
 
     }
 
     @Override
     public int hashCode() {
-        int result = name != null ? name.hashCode() : 0;
-        result = 31 * result + (yearpublished != null ? yearpublished.hashCode() : 0);
-        return result;
+        return id;
+    }
+
+    @Override
+    public String toString() {
+        return "BoardGameDescription{" +
+                "id=" + id +
+                ", name=" + name +
+                '}';
     }
 }
