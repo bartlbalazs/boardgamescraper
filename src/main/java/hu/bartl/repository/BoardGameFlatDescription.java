@@ -1,13 +1,18 @@
 package hu.bartl.repository;
 
+import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 
 public class BoardGameFlatDescription {
 
     @Id
-    private int id;
+    private ObjectId id;
+
+    private int bggId;
 
     private String name;
+
+    private String hungarianName;
 
     private String yearpublished;
 
@@ -23,12 +28,20 @@ public class BoardGameFlatDescription {
 
     private String rating;
 
-    public int getId() {
+    public ObjectId getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(ObjectId id) {
         this.id = id;
+    }
+
+    public int getBggId() {
+        return bggId;
+    }
+
+    public void setBggId(int bggId) {
+        this.bggId = bggId;
     }
 
     public String getName() {
@@ -37,6 +50,14 @@ public class BoardGameFlatDescription {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getHungarianName() {
+        return hungarianName;
+    }
+
+    public void setHungarianName(String hungarianName) {
+        this.hungarianName = hungarianName;
     }
 
     public String getYearpublished() {

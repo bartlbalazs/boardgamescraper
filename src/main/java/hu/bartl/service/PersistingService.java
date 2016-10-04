@@ -3,6 +3,7 @@ package hu.bartl.service;
 import hu.bartl.model.BoardGameDescription;
 import hu.bartl.repository.BoardGameFlatDescription;
 import hu.bartl.repository.DescriptionRepository;
+import org.bson.types.ObjectId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +31,8 @@ public class PersistingService {
         @Override
         public BoardGameFlatDescription apply(BoardGameDescription boardGameDescription) {
             BoardGameFlatDescription result = new BoardGameFlatDescription();
-            result.setId(boardGameDescription.getId());
+            result.setId(new ObjectId());
+            result.setBggId(boardGameDescription.getId());
             result.setName(boardGameDescription.getName().getValue());
             result.setImage(boardGameDescription.getImage());
             result.setThumbnail(boardGameDescription.getThumbnail());

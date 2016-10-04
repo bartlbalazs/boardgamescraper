@@ -17,11 +17,4 @@ public class BoardGameDescriptionContainer {
     public List<BoardGameDescription> getBoardGameDescriptions() {
         return boardGameDescriptions;
     }
-
-//    @XmlElement(name = "item")
-//    private BoardGameDescription boardGameDescriptions;
-//
-//    public BoardGameDescription getBoardGameDescriptions() {
-//        return boardGameDescriptions;
-//    }
 }
