@@ -14,13 +14,13 @@ public class BoardGameFlatDescription {
 
     private String hungarianName;
 
-    private String yearpublished;
+    private String yearPublished;
 
-    private String minplayers;
+    private String minPlayers;
 
-    private String maxplayers;
+    private String maxPlayers;
 
-    private String playingtime;
+    private String playingTime;
 
     private String thumbnail;
 
@@ -60,36 +60,36 @@ public class BoardGameFlatDescription {
         this.hungarianName = hungarianName;
     }
 
-    public String getYearpublished() {
-        return yearpublished;
+    public String getYearPublished() {
+        return yearPublished;
     }
 
-    public void setYearpublished(String yearpublished) {
-        this.yearpublished = yearpublished;
+    public void setYearPublished(String yearPublished) {
+        this.yearPublished = yearPublished;
     }
 
-    public String getMinplayers() {
-        return minplayers;
+    public String getMinPlayers() {
+        return minPlayers;
     }
 
-    public void setMinplayers(String minplayers) {
-        this.minplayers = minplayers;
+    public void setMinPlayers(String minPlayers) {
+        this.minPlayers = minPlayers;
     }
 
-    public String getMaxplayers() {
-        return maxplayers;
+    public String getMaxPlayers() {
+        return maxPlayers;
     }
 
-    public void setMaxplayers(String maxplayers) {
-        this.maxplayers = maxplayers;
+    public void setMaxPlayers(String maxPlayers) {
+        this.maxPlayers = maxPlayers;
     }
 
-    public String getPlayingtime() {
-        return playingtime;
+    public String getPlayingTime() {
+        return playingTime;
     }
 
-    public void setPlayingtime(String playingtime) {
-        this.playingtime = playingtime;
+    public void setPlayingTime(String playingTime) {
+        this.playingTime = playingTime;
     }
 
     public String getThumbnail() {

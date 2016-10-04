@@ -37,16 +37,16 @@ public class PersistingService {
             result.setImage(boardGameDescription.getImage());
             result.setThumbnail(boardGameDescription.getThumbnail());
             if (boardGameDescription.getMaxplayers() != null) {
-                result.setMaxplayers(boardGameDescription.getMaxplayers().getValue());
+                result.setMaxPlayers(boardGameDescription.getMaxplayers().getValue());
             }
             if (boardGameDescription.getMinplayers() != null) {
-                result.setMinplayers(boardGameDescription.getMinplayers().getValue());
+                result.setMinPlayers(boardGameDescription.getMinplayers().getValue());
             }
             if (boardGameDescription.getPlayingtime() != null) {
-                result.setPlayingtime(boardGameDescription.getPlayingtime().getValue());
+                result.setPlayingTime(boardGameDescription.getPlayingtime().getValue());
             }
             if (boardGameDescription.getYearpublished() != null) {
-                result.setYearpublished(boardGameDescription.getYearpublished().getValue());
+                result.setYearPublished(boardGameDescription.getYearpublished().getValue());
             }
             if (boardGameDescription.getStatistics() != null && boardGameDescription.getStatistics().getRating() != null) {
                 result.setRating(boardGameDescription.getStatistics().getRating().getAverage().getValue());
