@@ -1,7 +1,7 @@
 package hu.bartl.communication;
 
-import hu.bartl.model.BoardGameDescription;
-import hu.bartl.model.BoardGameDescriptionContainer;
+import hu.bartl.model.bggeek.BoardGameDescription;
+import hu.bartl.model.bggeek.BoardGameDescriptionContainer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,8 +15,8 @@ import java.util.stream.IntStream;
 @Component
 public class BGGeekAccessor {
 
-    private static final String BOARDGAME_INFO_URL = "http://boardgamegeek.com/xmlapi2/thing?type=boardgame&stats=1&id={id}";
     private static final Logger LOG = LoggerFactory.getLogger(BGGeekAccessor.class);
+    private static final String BOARDGAME_INFO_URL = "http://boardgamegeek.com/xmlapi2/thing?type=boardgame&stats=1&id={id}";
 
     @Autowired
     private RestTemplate restTemplate;
@@ -28,7 +28,7 @@ public class BGGeekAccessor {
             BoardGameDescriptionContainer container = restTemplate.getForObject(BOARDGAME_INFO_URL, BoardGameDescriptionContainer.class, getIds(startIndex, items));
             result.addAll(container.getBoardGameDescriptions());
         } catch (Exception ignored) {
-            System.out.println(ignored);
+            LOG.error(ignored.getMessage());
         }
         return result;
     }

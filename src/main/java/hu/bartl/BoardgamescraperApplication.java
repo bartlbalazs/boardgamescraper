@@ -1,6 +1,6 @@
 package hu.bartl;
 
-import hu.bartl.service.OrchestratorService;
+import hu.bartl.service.BasicInfoService;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -10,6 +10,6 @@ public class BoardgamescraperApplication {
 
     public static void main(String[] args) {
         ConfigurableApplicationContext context = SpringApplication.run(BoardgamescraperApplication.class, args);
-        context.getBean(OrchestratorService.class).run();
+        context.getBean(BasicInfoService.class).scrapeAll();
     }
 }

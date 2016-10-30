@@ -1,35 +1,20 @@
-package hu.bartl.service;
+package hu.bartl.configuration;
 
-import hu.bartl.model.BoardGameDescription;
+import hu.bartl.model.bggeek.BoardGameDescription;
 import hu.bartl.repository.BoardGameFlatDescription;
-import hu.bartl.repository.DescriptionRepository;
 import org.bson.types.ObjectId;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
-import java.util.List;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
-@Service
-public class PersistingService {
+@Configuration
+public class MappingConfiguration {
 
-    private static final Logger LOG = LoggerFactory.getLogger(PersistingService.class);
+    @Bean
+    public Function<BoardGameDescription, BoardGameFlatDescription> descriptionMapper() {
 
-    @Autowired
-    private DescriptionRepository descriptionRepository;
-
-    public void persist(List<BoardGameDescription> descriptions) {
-        DescriptionMapper descriptionMapper = new DescriptionMapper();
-        List<BoardGameFlatDescription> flatDescriptions = descriptions.stream().map(descriptionMapper::apply).collect(Collectors.toList());
-        descriptionRepository.insert(flatDescriptions);
-    }
-
-    private class DescriptionMapper implements Function<BoardGameDescription, BoardGameFlatDescription> {
-        @Override
-        public BoardGameFlatDescription apply(BoardGameDescription boardGameDescription) {
+        return (BoardGameDescription boardGameDescription) -> {
             BoardGameFlatDescription result = new BoardGameFlatDescription();
             result.setId(new ObjectId());
             result.setBggId(boardGameDescription.getId());
@@ -52,6 +37,6 @@ public class PersistingService {
                 result.setRating(boardGameDescription.getStatistics().getRating().getAverage().getValue());
             }
             return result;
-        }
+        };
     }
 }

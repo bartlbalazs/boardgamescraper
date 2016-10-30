@@ -1,4 +1,4 @@
-package hu.bartl.model;
+package hu.bartl.model.bggeek;
 
 
 import javax.xml.bind.annotation.XmlAccessType;

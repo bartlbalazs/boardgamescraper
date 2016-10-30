@@ -1,18 +1,18 @@
-package hu.bartl.model;
+package hu.bartl.model.bggeek;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
-@XmlRootElement(name = "ratings")
+@XmlRootElement(name = "statistics")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class Rating {
+public class Statistic {
 
-    @XmlElement(name = "average")
-    private StringValueType average;
+    @XmlElement(name = "ratings")
+    private Rating rating;
 
-    public StringValueType getAverage() {
-        return average;
+    public Rating getRating() {
+        return rating;
     }
 }

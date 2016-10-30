@@ -4,6 +4,8 @@ import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.List;
+
 @Document(collection = "boardgame")
 public class BoardGameFlatDescription {
 
@@ -14,7 +16,7 @@ public class BoardGameFlatDescription {
 
     private String name;
 
-    private String hungarianName;
+    private List<String> alternateNames;
 
     private String yearPublished;
 
@@ -54,12 +56,12 @@ public class BoardGameFlatDescription {
         this.name = name;
     }
 
-    public String getHungarianName() {
-        return hungarianName;
+    public List<String> getAlternateNames() {
+        return alternateNames;
     }
 
-    public void setHungarianName(String hungarianName) {
-        this.hungarianName = hungarianName;
+    public void setAlternateNames(List<String> alternateNames) {
+        this.alternateNames = alternateNames;
     }
 
     public String getYearPublished() {
