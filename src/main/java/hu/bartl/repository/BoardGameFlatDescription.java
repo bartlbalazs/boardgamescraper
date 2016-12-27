@@ -4,10 +4,11 @@ import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.io.Serializable;
 import java.util.List;
 
 @Document(collection = "boardgame")
-public class BoardGameFlatDescription {
+public class BoardGameFlatDescription implements Serializable {
 
     @Id
     private ObjectId id;
@@ -118,5 +119,22 @@ public class BoardGameFlatDescription {
 
     public void setRating(String rating) {
         this.rating = rating;
+    }
+
+    @Override
+    public String toString() {
+        return "BoardGameFlatDescription{" +
+                "id=" + id +
+                ", bggId=" + bggId +
+                ", name='" + name + '\'' +
+                ", alternateNames=" + alternateNames +
+                ", yearPublished='" + yearPublished + '\'' +
+                ", minPlayers='" + minPlayers + '\'' +
+                ", maxPlayers='" + maxPlayers + '\'' +
+                ", playingTime='" + playingTime + '\'' +
+                ", thumbnail='" + thumbnail + '\'' +
+                ", image='" + image + '\'' +
+                ", rating='" + rating + '\'' +
+                '}';
     }
 }

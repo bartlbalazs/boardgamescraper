@@ -42,8 +42,16 @@ public class BoardGameDescription {
         return id;
     }
 
+    public void setId(int id) {
+        this.id = id;
+    }
+
     public List<NameType> getNames() {
         return name;
+    }
+
+    public void setName(List<NameType> name) {
+        this.name = name;
     }
 
     public String getType() {

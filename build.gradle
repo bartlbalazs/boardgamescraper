@@ -29,6 +29,7 @@ repositories {
 
 dependencies {
 	compile('org.springframework.boot:spring-boot-starter')
+	compile("org.springframework.boot:spring-boot-starter-amqp")
 	compile("org.springframework:spring-web")
 	compile("org.springframework.boot:spring-boot-starter-data-mongodb")
 	testCompile('org.springframework.boot:spring-boot-starter-test')

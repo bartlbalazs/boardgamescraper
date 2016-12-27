@@ -1,32 +1,31 @@
 package hu.bartl.service;
 
 import hu.bartl.communication.BGGeekAccessor;
+import hu.bartl.configuration.ConfigurationProvider;
+import hu.bartl.configuration.TTConfiguration;
 import hu.bartl.model.bggeek.BoardGameDescription;
 import hu.bartl.repository.BoardGameFlatDescription;
 import hu.bartl.repository.DescriptionRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.amqp.core.Message;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StopWatch;
 
 import java.util.List;
 import java.util.function.Function;
 
+import static hu.bartl.configuration.RabbitConfiguration.UPDATE_QUEUE;
+
 @Service
 public class BasicInfoService {
 
     private static final Logger LOG = LoggerFactory.getLogger(BasicInfoService.class);
 
-    @Value("${basicinfo.timeOut}")
-    private int timeout;
-
-    @Value("${basicinfo.items}")
-    private int itemCount;
-
-    @Value("${basicinfo.chunksize}")
-    private int chunkSize;
+    @Autowired
+    private ConfigurationProvider configurationProvider;
 
     @Autowired
     private BGGeekAccessor bgGeekAccessor;
@@ -37,19 +36,53 @@ public class BasicInfoService {
     @Autowired
     private DescriptionRepository descriptionRepository;
 
+    @Autowired
+    private  RabbitTemplate rabbitTemplate;
+
+    @Autowired
+    private TTConfiguration ttConfiguration;
+
 
     public void scrapeAll() {
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();
-        for (int i = 1; i <= itemCount; i += chunkSize) {
-            List<BoardGameDescription> descriptions = bgGeekAccessor.getBoardGameDescriptions(i, chunkSize);
+        downloadDescriptions();
+        stopWatch.stop();
+        LOG.info("Downloading and persisting {} items took {} seconds.", configurationProvider.getItemCount(), stopWatch.getTotalTimeSeconds());
+    }
 
+    private void downloadDescriptions() {
+        int checkedItems = 0;
+
+        while (checkedItems <= configurationProvider.getItemCount()) {
+            StopWatch chunkTimer = new StopWatch();
+            chunkTimer.start();
+
+            List<BoardGameDescription> descriptions = bgGeekAccessor.getBoardGameDescriptions(checkedItems, configurationProvider.getChunkSize());
             descriptions.stream().map(descriptionMapper::apply).forEach(desc -> {
                 descriptionRepository.insert(desc);
+                if (ttConfiguration.isUpdateRemote()) {
+                    rabbitTemplate.convertAndSend(UPDATE_QUEUE, desc);
+                }
+
                 LOG.info("Description downloaded for {} ({})", desc.getName(), desc.getBggId());
             });
+            chunkTimer.stop();
+            try {
+                Thread.sleep(Math.max(configurationProvider.getTimeout(), chunkTimer.getTotalTimeMillis()));
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            checkedItems = getCheckedItemsCount(checkedItems, descriptions);
         }
-        stopWatch.stop();
-        LOG.info("Downloading and persisting {} items took {} seconds.", itemCount, stopWatch.getTotalTimeSeconds());
+    }
+
+    private int getCheckedItemsCount(int checkedItems, List<BoardGameDescription> descriptions) {
+        int incrementByChunkSize = checkedItems + configurationProvider.getChunkSize();
+        if (descriptions.size() > 0) {
+            return Math.max(incrementByChunkSize, descriptions.get(descriptions.size() -1).getId());
+        } else {
+            return incrementByChunkSize;
+        }
     }
 }

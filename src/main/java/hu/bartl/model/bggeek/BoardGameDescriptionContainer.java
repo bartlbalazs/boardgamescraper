@@ -14,6 +14,10 @@ public class BoardGameDescriptionContainer {
     @XmlElement(name = "item")
     private List<BoardGameDescription> boardGameDescriptions;
 
+    public void setBoardGameDescriptions(List<BoardGameDescription> boardGameDescriptions) {
+        this.boardGameDescriptions = boardGameDescriptions;
+    }
+
     public List<BoardGameDescription> getBoardGameDescriptions() {
         return boardGameDescriptions;
     }
