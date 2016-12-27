@@ -2,13 +2,12 @@ package hu.bartl.service;
 
 import hu.bartl.communication.BGGeekAccessor;
 import hu.bartl.configuration.ConfigurationProvider;
-import hu.bartl.configuration.TTConfiguration;
+import hu.bartl.configuration.TTConfigurationProvider;
 import hu.bartl.model.bggeek.BoardGameDescription;
 import hu.bartl.repository.BoardGameFlatDescription;
 import hu.bartl.repository.DescriptionRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -40,7 +39,7 @@ public class BasicInfoService {
     private  RabbitTemplate rabbitTemplate;
 
     @Autowired
-    private TTConfiguration ttConfiguration;
+    private TTConfigurationProvider ttConfigurationProvider;
 
 
     public void scrapeAll() {
@@ -61,7 +60,7 @@ public class BasicInfoService {
             List<BoardGameDescription> descriptions = bgGeekAccessor.getBoardGameDescriptions(checkedItems, configurationProvider.getChunkSize());
             descriptions.stream().map(descriptionMapper::apply).forEach(desc -> {
                 descriptionRepository.insert(desc);
-                if (ttConfiguration.isUpdateRemote()) {
+                if (ttConfigurationProvider.isUpdateRemote()) {
                     rabbitTemplate.convertAndSend(UPDATE_QUEUE, desc);
                 }
 
