@@ -18,27 +18,26 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType(name = "nameType")
 public class NameType {
 
+
+    @XmlAttribute(name = "type")
+    protected String type;
+
     @XmlAttribute(name = "value")
     protected String value;
 
-    /**
-     * Gets the value of the value property.
-     *
-     * @return possible object is
-     * {@link String }
-     */
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
     public String getValue() {
         return value;
     }
 
-    /**
-     * Sets the value of the value property.
-     *
-     * @param value allowed object is
-     *              {@link String }
-     */
     public void setValue(String value) {
         this.value = value;
     }
-
 }

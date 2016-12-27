@@ -6,7 +6,6 @@ import hu.bartl.repository.BoardGameFlatDescription;
 import hu.bartl.repository.DescriptionRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -14,8 +13,6 @@ import org.springframework.util.StopWatch;
 
 import java.util.List;
 import java.util.function.Function;
-
-import static hu.bartl.configuration.RabbitConfiguration.QUEUE_NAME;
 
 @Service
 public class BasicInfoService {
@@ -40,9 +37,6 @@ public class BasicInfoService {
     @Autowired
     private DescriptionRepository descriptionRepository;
 
-    @Autowired
-    private RabbitTemplate rabbitTemplate;
-
 
     public void scrapeAll() {
         StopWatch stopWatch = new StopWatch();
@@ -53,7 +47,6 @@ public class BasicInfoService {
             descriptions.stream().map(descriptionMapper::apply).forEach(desc -> {
                 descriptionRepository.insert(desc);
                 LOG.info("Description downloaded for {} ({})", desc.getName(), desc.getBggId());
-                rabbitTemplate.convertAndSend(QUEUE_NAME, desc.getBggId());
             });
         }
         stopWatch.stop();

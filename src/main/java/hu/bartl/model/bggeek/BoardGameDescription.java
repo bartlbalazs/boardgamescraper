@@ -1,6 +1,7 @@
 package hu.bartl.model.bggeek;
 
 import javax.xml.bind.annotation.*;
+import java.util.List;
 
 @XmlRootElement(name = "item")
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -9,8 +10,11 @@ public class BoardGameDescription {
     @XmlAttribute
     private int id;
 
+    @XmlAttribute
+    private String type;
+
     @XmlElement
-    private NameType name;
+    private List<NameType> name;
 
     @XmlElement
     private StringValueType yearpublished;
@@ -38,8 +42,12 @@ public class BoardGameDescription {
         return id;
     }
 
-    public NameType getName() {
+    public List<NameType> getNames() {
         return name;
+    }
+
+    public String getType() {
+        return type;
     }
 
     public StringValueType getYearpublished() {
