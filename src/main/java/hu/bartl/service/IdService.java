@@ -11,8 +11,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static org.springframework.util.StringUtils.collectionToDelimitedString;
-
 @Service
 public class IdService {
 
@@ -21,11 +19,7 @@ public class IdService {
     @Autowired
     private DescriptionRepository descriptionRepository;
 
-    public String getNextIdsString(int startIndex, int items) {
-        return collectionToDelimitedString(getIds(startIndex, items), ",");
-    }
-
-    private List<Integer> getIds(int startIndex, int items) {
+    public List<Integer> getIds(int startIndex, int items) {
         List<Integer> ids = new ArrayList<>();
         int idCandidate = startIndex;
         while (ids.size() < items) {

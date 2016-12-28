@@ -36,7 +36,10 @@ public class BasicInfoService {
     private DescriptionRepository descriptionRepository;
 
     @Autowired
-    private  RabbitTemplate rabbitTemplate;
+    private IdService idService;
+
+    @Autowired
+    private RabbitTemplate rabbitTemplate;
 
     @Autowired
     private TTConfigurationProvider ttConfigurationProvider;
@@ -51,13 +54,14 @@ public class BasicInfoService {
     }
 
     private void downloadDescriptions() {
-        int checkedItems = 0;
+        int synchronizedItems = 0;
 
-        while (checkedItems <= configurationProvider.getItemCount()) {
+        while (synchronizedItems <= configurationProvider.getItemCount()) {
             StopWatch chunkTimer = new StopWatch();
             chunkTimer.start();
+            List<Integer> ids = idService.getIds(synchronizedItems + 1, configurationProvider.getChunkSize());
 
-            List<BoardGameDescription> descriptions = bgGeekAccessor.getBoardGameDescriptions(checkedItems, configurationProvider.getChunkSize());
+            List<BoardGameDescription> descriptions = bgGeekAccessor.getBoardGameDescriptions(ids);
             descriptions.stream().map(descriptionMapper::apply).forEach(desc -> {
                 descriptionRepository.insert(desc);
                 if (ttConfigurationProvider.isUpdateRemote()) {
@@ -72,14 +76,14 @@ public class BasicInfoService {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            checkedItems = getCheckedItemsCount(checkedItems, descriptions);
+            synchronizedItems = ids.get(ids.size() -1);
         }
     }
 
     private int getCheckedItemsCount(int checkedItems, List<BoardGameDescription> descriptions) {
         int incrementByChunkSize = checkedItems + configurationProvider.getChunkSize();
         if (descriptions.size() > 0) {
-            return Math.max(incrementByChunkSize, descriptions.get(descriptions.size() -1).getId());
+            return Math.max(incrementByChunkSize, descriptions.get(descriptions.size() - 1).getId());
         } else {
             return incrementByChunkSize;
         }

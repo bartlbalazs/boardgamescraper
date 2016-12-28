@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
@@ -26,12 +27,13 @@ public class BGGeekAccessor {
     @Autowired
     private RestTemplate restTemplate;
 
-    public List<BoardGameDescription> getBoardGameDescriptions(int startIndex, int items) {
-        LOG.info("Synchronizing {} items from {}", items, startIndex);
+    public List<BoardGameDescription> getBoardGameDescriptions(List<Integer> ids) {
+        LOG.info("Synchronizing items: {}", ids);
+        String idsString = StringUtils.collectionToDelimitedString(ids, ",");
         List<BoardGameDescription> result = new ArrayList<>();
         try {
-            BoardGameDescriptionContainer container = restTemplate.getForObject(BOARDGAME_INFO_URL, BoardGameDescriptionContainer.class, idService.getNextIdsString(startIndex, items));
-            if (container.getBoardGameDescriptions() != null) {
+            BoardGameDescriptionContainer container = restTemplate.getForObject(BOARDGAME_INFO_URL, BoardGameDescriptionContainer.class, idsString);
+            if (container != null && container.getBoardGameDescriptions() != null) {
                 result.addAll(container.getBoardGameDescriptions());
             }
         } catch (Exception ignored) {
