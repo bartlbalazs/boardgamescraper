@@ -19,7 +19,7 @@ import java.util.stream.IntStream;
 public class BGGeekAccessor {
 
     private static final Logger LOG = LoggerFactory.getLogger(BGGeekAccessor.class);
-    private static final String BOARDGAME_INFO_URL = "http://boardgamegeek.com/xmlapi2/thing?type=boardgame&stats=1&id={id}";
+    private static final String BOARDGAME_INFO_URL = "https://boardgamegeek.com/xmlapi2/thing?type=boardgame&stats=1&id={id}";
 
     @Autowired
     private IdService idService;

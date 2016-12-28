@@ -1,6 +1,7 @@
 package hu.bartl.communication;
 
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import hu.bartl.configuration.TTConfigurationProvider;
 import hu.bartl.repository.BoardGameFlatDescription;
 import org.slf4j.Logger;
@@ -9,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
@@ -25,6 +25,9 @@ public class TTAccessor {
     @Autowired
     private RestTemplate restTemplate;
 
+    @Autowired
+    private ObjectMapper objectMapper;
+
     private static final Logger LOG = LoggerFactory.getLogger(TTAccessor.class);
 
     @Retryable(interceptor = "remoteRetryInterceptor")
@@ -34,11 +37,9 @@ public class TTAccessor {
             MultiValueMap<String, String> headers = new LinkedMultiValueMap<>();
             headers.add("Authorization", configuration.getApiKey());
 
+            String descriptionString = objectMapper.writeValueAsString(description);
+            HttpEntity<String> request = new HttpEntity<>(descriptionString, headers);
 
-            RestTemplate restTemplate = new RestTemplate();
-            restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
-
-            HttpEntity<BoardGameFlatDescription> request = new HttpEntity<>(description, headers);
 
             ResponseEntity<Void> response = restTemplate.postForEntity(configuration.getApiEndpoint(), request, Void.class);
             if (response.getStatusCode() != HttpStatus.CREATED) {
