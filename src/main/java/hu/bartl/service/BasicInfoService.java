@@ -72,11 +72,14 @@ public class BasicInfoService {
             });
             chunkTimer.stop();
             try {
-                Thread.sleep(Math.max(configurationProvider.getTimeout(), chunkTimer.getTotalTimeMillis()));
+                int millisToMinTimeout = configurationProvider.getTimeout() - configurationProvider.getTimeout();
+                if (millisToMinTimeout > 0) {
+                    Thread.sleep(millisToMinTimeout);
+                }
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            synchronizedItems = ids.get(ids.size() -1);
+            synchronizedItems = ids.get(ids.size() - 1);
         }
     }
 
