@@ -9,6 +9,9 @@ public class ConfigurationProvider {
     @Value("${basicinfo.timeOut}")
     private int timeout;
 
+    @Value("${basicinfo.startIndex}")
+    private int startIndex;
+
     @Value("${basicinfo.items}")
     private int itemCount;
 
@@ -17,6 +20,10 @@ public class ConfigurationProvider {
 
     public int getTimeout() {
         return timeout;
+    }
+
+    public int getStartIndex() {
+        return startIndex;
     }
 
     public int getItemCount() {

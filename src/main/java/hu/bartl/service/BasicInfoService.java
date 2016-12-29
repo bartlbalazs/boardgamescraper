@@ -54,41 +54,39 @@ public class BasicInfoService {
     }
 
     private void downloadDescriptions() {
-        int synchronizedItems = 0;
+        int synchronizedItems = configurationProvider.getStartIndex();
 
         while (synchronizedItems <= configurationProvider.getItemCount()) {
             StopWatch chunkTimer = new StopWatch();
             chunkTimer.start();
             List<Integer> ids = idService.getIds(synchronizedItems + 1, configurationProvider.getChunkSize());
-
-            List<BoardGameDescription> descriptions = bgGeekAccessor.getBoardGameDescriptions(ids);
-            descriptions.stream().map(descriptionMapper::apply).forEach(desc -> {
-                descriptionRepository.insert(desc);
-                if (ttConfigurationProvider.isUpdateRemote()) {
-                    rabbitTemplate.convertAndSend(UPDATE_QUEUE, desc);
-                }
-
-                LOG.info("Description downloaded for {} ({})", desc.getName(), desc.getBggId());
-            });
+            synchronizeItemss(ids);
             chunkTimer.stop();
-            try {
-                int millisToMinTimeout = configurationProvider.getTimeout() - configurationProvider.getTimeout();
-                if (millisToMinTimeout > 0) {
-                    Thread.sleep(millisToMinTimeout);
-                }
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+            waitBeforeNextApiCall(chunkTimer.getTotalTimeMillis());
             synchronizedItems = ids.get(ids.size() - 1);
         }
     }
 
-    private int getCheckedItemsCount(int checkedItems, List<BoardGameDescription> descriptions) {
-        int incrementByChunkSize = checkedItems + configurationProvider.getChunkSize();
-        if (descriptions.size() > 0) {
-            return Math.max(incrementByChunkSize, descriptions.get(descriptions.size() - 1).getId());
-        } else {
-            return incrementByChunkSize;
+    private void synchronizeItemss(List<Integer> ids) {
+        List<BoardGameDescription> descriptions = bgGeekAccessor.getBoardGameDescriptions(ids);
+        descriptions.stream().map(descriptionMapper::apply).forEach(desc -> {
+            descriptionRepository.insert(desc);
+            if (ttConfigurationProvider.isUpdateRemote()) {
+                rabbitTemplate.convertAndSend(UPDATE_QUEUE, desc);
+            }
+
+            LOG.info("Description downloaded for {} ({})", desc.getName(), desc.getBggId());
+        });
+    }
+
+    private void waitBeforeNextApiCall(long timeSpentWithPreviousCall) {
+        try {
+            long timeRemainingToMinimumWaiting = configurationProvider.getTimeout() - timeSpentWithPreviousCall;
+            if (timeRemainingToMinimumWaiting > 0) {
+                Thread.sleep(timeRemainingToMinimumWaiting);
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
     }
 }
