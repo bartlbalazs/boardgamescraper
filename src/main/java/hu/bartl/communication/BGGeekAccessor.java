@@ -2,13 +2,12 @@ package hu.bartl.communication;
 
 import hu.bartl.model.bggeek.BoardGameDescription;
 import hu.bartl.model.bggeek.BoardGameDescriptionContainer;
-import hu.bartl.repository.DescriptionRepository;
 import hu.bartl.service.IdService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.retry.RetryCallback;
-import org.springframework.retry.RetryContext;
 import org.springframework.retry.support.RetryTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
@@ -17,7 +16,6 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.IntStream;
 
 @Component
 public class BGGeekAccessor {
@@ -35,14 +33,19 @@ public class BGGeekAccessor {
     private RetryTemplate retryTemplate;
 
     public List<BoardGameDescription> getBoardGameDescriptions(List<Integer> ids) {
-        LOG.info("Synchronizing items: {}", ids);
         String idsString = StringUtils.collectionToDelimitedString(ids, ",");
 
+
         return retryTemplate.execute((RetryCallback<List<BoardGameDescription>, ResourceAccessException>) context -> {
-            BoardGameDescriptionContainer container = restTemplate.getForObject(BOARDGAME_INFO_URL, BoardGameDescriptionContainer.class, idsString);
+            LOG.info("Synchronizing items: {}", ids);
             List<BoardGameDescription> result = new ArrayList<>();
-            if (container != null && container.getBoardGameDescriptions() != null) {
-                result.addAll(container.getBoardGameDescriptions());
+            try {
+                BoardGameDescriptionContainer container = restTemplate.getForObject(BOARDGAME_INFO_URL, BoardGameDescriptionContainer.class, idsString);
+                if (container != null && container.getBoardGameDescriptions() != null) {
+                    result.addAll(container.getBoardGameDescriptions());
+                }
+            } catch (HttpMessageNotReadableException ignored) {
+
             }
             return result;
         });
