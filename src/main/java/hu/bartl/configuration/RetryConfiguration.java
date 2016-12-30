@@ -18,7 +18,7 @@ public class RetryConfiguration {
     @Autowired
     private TTConfigurationProvider ttConfigurationProvider;
 
-    private static final int MAX_ATTEMPTS = 5;
+    private static final int MAX_ATTEMPTS = 10;
 
     @Bean
     public RetryOperationsInterceptor remoteRetryInterceptor(RetryTemplate retryTemplate) {
@@ -47,6 +47,7 @@ public class RetryConfiguration {
         ExponentialBackOffPolicy policy = new ExponentialBackOffPolicy();
         policy.setInitialInterval(ttConfigurationProvider.getApiTimeout());
         policy.setMultiplier(2.5);
+        policy.setMaxInterval(90000);
         return policy;
     }
 }
